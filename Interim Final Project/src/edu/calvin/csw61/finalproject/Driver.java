@@ -1,6 +1,10 @@
 /**
  * We implement these patterns:
- * 	- Strategy
+ * 	- State
+ *  - Factory
+ *  - Singleton
+ *  - Facade
+ *  - Adapter
  * 	- Command
  */
 package edu.calvin.csw61.finalproject;

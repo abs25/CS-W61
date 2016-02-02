@@ -1,7 +1,9 @@
 package edu.calvin.csw61.finalproject.playercommands;
 
+import edu.calvin.csw61.finalproject.ApertureBehavior;
 import edu.calvin.csw61.finalproject.Door;
 import edu.calvin.csw61.finalproject.Player;
+import edu.calvin.csw61.finalproject.Room;
 import edu.calvin.csw61.finalproject.WallBehavior;
 
 /**
@@ -38,11 +40,16 @@ public class Walk implements Command{
 			//If the AperatureBehavior is a Door...
 			if(myPlayer.getRoom().getAperatures().get(i).getName().equals("door")) {  
 				//Typecast to a Door
-				Door checker = (Door)myPlayer.getRoom().getAperatures().get(i);  
-				//Check if the Door is locked...
-				if(!checker.isLocked()) {
-					//Unlocked, so check if the Door's direction is equal to the passed direction
-					if(checker.getDir().equals(myDirection.toLowerCase())) {
+				Door checker = (Door)myPlayer.getRoom().getAperatures().get(i);
+				//Check if the Door is equal to the Player's direction...
+				//(THIS WAS WHERE THAT STUPID BUG WAS!)
+				//(WE HAD TO FIRST CHECK IF THE DIRECTION OF THE APERTURE
+				// WAS EQUAL TO THE DIRECTION OF THE PLAYER. THEN CHECK IF 
+				// THE DOOR WAS LOCKED IF IT WAS A DOOR. WE DID THE 
+				// OPPOSITE AND SO THAT WAS WHY THE DOOR LOGIC WAS GETTING FUZZY).
+				if(checker.getDir().equals(myDirection)) {
+					if(!checker.isLocked()) {
+						//Unlocked
 						//Go through the Door.
 						checker.goThrough(myPlayer); 
 						//put the room description in result
@@ -51,19 +58,19 @@ public class Walk implements Command{
 						result += myPlayer.getRoom().showObjects();
 						result += myPlayer.getRoom().showPeople();
 						//Only go through the Door once.
-						return; 
+						break; 
+					} else {
+						result += "The door is locked. Do you have a key?";
+						break;
 					}
-				} else {
-					result += "LOCKED.";
-					return;
 				}
 			} else {  //Check for a wall...
 				//Typecast to a Wall
 				WallBehavior checker2 = (WallBehavior)myPlayer.getRoom().getAperatures().get(i);  
 				//If the Wall's direction equals the Player's Direction...
-				if(checker2.getDir().equals(myDirection.toLowerCase())) {  
+				if(checker2.getDir().equals(myDirection)) {  
 					result += "You can't go that way";
-					return;
+					break;
 				}
 			}
 		}
